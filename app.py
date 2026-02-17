@@ -4,16 +4,18 @@
 
 import streamlit as st
 import numpy as np
-import pickle
 
-# -------------------------------
+import joblib
+
 # Load trained model
-# -------------------------------
-with open("rf_aqi_model.pkl", "rb") as file:
-    model = pickle.load(file)
+model = joblib.load("rf_aqi_model.joblib")
 
-with open("city_encoder.pkl", "rb") as file:
-    city_encoder = pickle.load(file)
+# Load scaler
+scaler = joblib.load("scaler.joblib")
+
+# Load cities
+cities = joblib.load("cities.joblib")
+
 
 # -------------------------------
 # Page configuration
@@ -67,4 +69,5 @@ if st.button("Predict AQI"):
         st.error("Category: Very Poor 🤒")
     else:
         st.error("Category: Severe ☠️")
+
 
