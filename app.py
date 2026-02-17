@@ -9,7 +9,7 @@ import pickle
 # -------------------------------
 # Load trained model
 # -------------------------------
-with open("aqi_model.pkl", "rb") as file:
+with open("rf_aqi_model.pkl", "rb") as file:
     model = pickle.load(file)
 
 with open("city_encoder.pkl", "rb") as file:
@@ -67,3 +67,4 @@ if st.button("Predict AQI"):
         st.error("Category: Very Poor 🤒")
     else:
         st.error("Category: Severe ☠️")
+
