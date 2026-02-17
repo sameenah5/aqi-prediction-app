@@ -7,7 +7,7 @@ import joblib
 # ---------------------------
 # Load saved files from repo
 # ---------------------------
-df = pd.read_csv("city_day.csv")  # your dataset (optional for display)
+# df = pd.read_csv("city_day.csv")  # your dataset (optional for display)
 rf_model = joblib.load("rf_aqi_model.joblib")
 scaler = joblib.load("scaler.joblib")
 cities = joblib.load("cities.joblib")
@@ -60,3 +60,4 @@ if st.button("Predict AQI"):
     predicted_aqi = rf_model.predict(X_input)
 
     st.success(f"Predicted AQI: {predicted_aqi[0]:.2f}")
+
