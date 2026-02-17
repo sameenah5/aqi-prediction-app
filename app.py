@@ -12,7 +12,7 @@ import urllib.request
 # Download model assets (from GitHub Release)
 # -------------------------------
 
-BASE_URL = "https://github.com/USERNAME/REPO/releases/download/v1.0.0/"
+BASE_URL = "https://github.com/sameenah5/aqi-prediction-app/releases/download/v1.0.0/"
 
 FILES = {
     "rf_aqi_model.joblib": BASE_URL + "rf_aqi_model.joblib",
@@ -86,3 +86,4 @@ if st.button("Predict AQI"):
         st.error("Category: Very Poor 🤒")
     else:
         st.error("Category: Severe ☠️")
+
