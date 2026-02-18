@@ -71,7 +71,7 @@ if st.button("Predict AQI"):
     if predicted_aqi <= 50:
         color = "#2E8B57"  # Green
         status = "Good"
-    elif predicted_aqi <= 410:
+    elif predicted_aqi <= 420:
         color = "#FFD700"  # Yellow
         status = "Moderate"
     else:
@@ -96,4 +96,5 @@ if st.button("Predict AQI"):
         """,
         unsafe_allow_html=True
     )
+
 
