@@ -5,38 +5,60 @@ import numpy as np
 import joblib
 
 # ---------------------------
-# Load saved files from repo
+# Load saved files
 # ---------------------------
-# df = pd.read_csv("city_day.csv")  # your dataset (optional for display)
 rf_model = joblib.load("rf_aqi_model.joblib")
 scaler = joblib.load("scaler.joblib")
 cities = joblib.load("cities.joblib")
 
 # ---------------------------
+# Page configuration
+# ---------------------------
+st.set_page_config(
+    page_title="AQI Predictor",
+    page_icon="🌿",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
+
+# ---------------------------
 # App title
 # ---------------------------
-st.title("AQI Prediction App")
+st.markdown("<h1 style='text-align: center; color: green;'>🌿 AQI Prediction App</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Predict Air Quality Index based on pollutant levels</p>", unsafe_allow_html=True)
+st.write("---")
 
 # ---------------------------
-# User inputs
+# Sidebar for inputs
 # ---------------------------
-st.subheader("Enter Pollutant Levels")
-pm25 = st.number_input("PM2.5", min_value=0.0, max_value=500.0, value=50.0)
-pm10 = st.number_input("PM10", min_value=0.0, max_value=500.0, value=80.0)
-no2 = st.number_input("NO2", min_value=0.0, max_value=200.0, value=40.0)
-so2 = st.number_input("SO2", min_value=0.0, max_value=100.0, value=10.0)
-co = st.number_input("CO", min_value=0.0, max_value=50.0, value=1.0)
-o3 = st.number_input("O3", min_value=0.0, max_value=300.0, value=30.0)
+st.sidebar.header("Enter Pollutant Levels & City")
 
-city = st.selectbox("Select City", cities)
+pm25 = st.sidebar.slider("PM2.5 (µg/m³)", 0.0, 500.0, 50.0)
+pm10 = st.sidebar.slider("PM10 (µg/m³)", 0.0, 500.0, 80.0)
+no2 = st.sidebar.slider("NO2 (µg/m³)", 0.0, 200.0, 40.0)
+so2 = st.sidebar.slider("SO2 (µg/m³)", 0.0, 100.0, 10.0)
+co = st.sidebar.slider("CO (mg/m³)", 0.0, 50.0, 1.0)
+o3 = st.sidebar.slider("O3 (µg/m³)", 0.0, 300.0, 30.0)
+city = st.sidebar.selectbox("Select City", cities)
 
 # ---------------------------
-# Predict AQI
+# Main content
+# ---------------------------
+st.subheader("Your Inputs")
+st.write(f"**City:** {city}")
+st.write(f"**PM2.5:** {pm25}  |  **PM10:** {pm10}")
+st.write(f"**NO2:** {no2}  |  **SO2:** {so2}")
+st.write(f"**CO:** {co}  |  **O3:** {o3}")
+
+st.write("---")
+
+# ---------------------------
+# Prediction
 # ---------------------------
 if st.button("Predict AQI"):
     numeric_features = ['PM2.5', 'PM10', 'NO2', 'SO2', 'CO', 'O3']
-    
-    # Create user input dataframe
+
+    # User input dataframe
     user_input = pd.DataFrame({
         'PM2.5': [pm25],
         'PM10': [pm10],
@@ -47,17 +69,39 @@ if st.button("Predict AQI"):
         'City': [city]
     })
 
-    # Scale numeric features only
+    # Scale numeric features
     user_input[numeric_features] = scaler.transform(user_input[numeric_features])
 
     # Encode city
     user_input['City_encoded'] = cities.index(city)
 
-    # Prepare final features in correct order
+    # Prepare final features
     X_input = user_input[numeric_features + ['City_encoded']]
 
     # Predict
-    predicted_aqi = rf_model.predict(X_input)
+    predicted_aqi = rf_model.predict(X_input)[0]
 
-    st.success(f"Predicted AQI: {predicted_aqi[0]:.2f}")
+    # Display AQI with color coding
+    if predicted_aqi <= 50:
+        color = "green"
+        status = "Good"
+    elif predicted_aqi <= 100:
+        color = "yellow"
+        status = "Moderate"
+    elif predicted_aqi <= 150:
+        color = "orange"
+        status = "Unhealthy for Sensitive Groups"
+    elif predicted_aqi <= 200:
+        color = "red"
+        status = "Unhealthy"
+    elif predicted_aqi <= 300:
+        color = "purple"
+        status = "Very Unhealthy"
+    else:
+        color = "maroon"
+        status = "Hazardous"
 
+    st.markdown(
+        f"<h2 style='text-align: center; color: {color};'>Predicted AQI: {predicted_aqi:.2f} ({status})</h2>",
+        unsafe_allow_html=True
+    )
