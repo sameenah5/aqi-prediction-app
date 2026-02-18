@@ -1,7 +1,6 @@
 # app.py
 import streamlit as st
 import pandas as pd
-import numpy as np
 import joblib
 
 # ---------------------------
@@ -67,7 +66,7 @@ if st.button("Predict AQI"):
     predicted_aqi = rf_model.predict(X_input)[0]
 
     # ---------------------------
-    # AQI color coding
+    # Simplified AQI categorization
     # ---------------------------
     if predicted_aqi <= 50:
         color = "#2E8B57"  # Green
@@ -75,15 +74,6 @@ if st.button("Predict AQI"):
     elif predicted_aqi <= 100:
         color = "#FFD700"  # Yellow
         status = "Moderate"
-    elif predicted_aqi <= 150:
-        color = "#FF8C00"  # Orange
-        status = "Unhealthy for Sensitive Groups"
-    elif predicted_aqi <= 200:
-        color = "#FF4500"  # Red-Orange
-        status = "Unhealthy"
-    elif predicted_aqi <= 300:
-        color = "#800080"  # Purple
-        status = "Very Unhealthy"
     else:
         color = "#8B0000"  # Maroon
         status = "Hazardous"
